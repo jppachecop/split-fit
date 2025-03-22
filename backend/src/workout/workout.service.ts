@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { UpdateWorkoutDto } from './dto/update-workout.dto';
-import { PrismaService } from 'src/prisma.service';
-
+import { Workout } from './entities/workout.entity';
 @Injectable()
 export class WorkoutService {
   constructor(private prisma: PrismaService) {}
 
-  create(createWorkoutDto: CreateWorkoutDto) {
+  async create(createWorkoutDto: CreateWorkoutDto): Promise<Workout> {
     return this.prisma.workout.create({
       data: {
         name: createWorkoutDto.name,
@@ -24,17 +24,24 @@ export class WorkoutService {
     });
   }
 
-  findAll() {
+  async findAll(): Promise<Workout[]> {
     return this.prisma.workout.findMany();
   }
 
-  findOne(id: string) {
-    return this.prisma.workout.findUnique({
+  async findOne(id: string): Promise<Workout> {
+    const workout = await this.prisma.workout.findUnique({
       where: { id },
     });
+    if (!workout) {
+      throw new NotFoundException('Workout not found');
+    }
+    return workout;
   }
 
-  update(id: string, updateWorkoutDto: UpdateWorkoutDto) {
+  async update(
+    id: string,
+    updateWorkoutDto: UpdateWorkoutDto,
+  ): Promise<Workout> {
     return this.prisma.workout.update({
       where: { id },
       data: {
@@ -47,9 +54,10 @@ export class WorkoutService {
     });
   }
 
-  remove(id: string) {
-    return this.prisma.workout.delete({
+  async remove(id: string): Promise<string> {
+    await this.prisma.workout.delete({
       where: { id },
     });
+    return id;
   }
 }
