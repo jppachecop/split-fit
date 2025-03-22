@@ -20,9 +20,9 @@ export class WorkoutController {
     return this.workoutService.create(createWorkoutDto);
   }
 
-  @Get()
-  findAll() {
-    return this.workoutService.findAll();
+  @Get('user/:id')
+  findAllByUser(@Param('id') id: string) {
+    return this.workoutService.findAllByUser(id);
   }
 
   @Get(':id')

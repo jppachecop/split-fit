@@ -5,4 +5,5 @@ export class CreateWorkoutDto {
   name: string;
   muscleGroups: MuscleGroup[];
   exercises: CreateExerciseDto[];
+  userId: string;
 }

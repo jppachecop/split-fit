@@ -14,7 +14,7 @@ export class WorkoutService {
         muscleGroups: createWorkoutDto.muscleGroups,
         user: {
           connect: {
-            id: '1',
+            id: createWorkoutDto.userId,
           },
         },
         exercises: {
@@ -24,13 +24,18 @@ export class WorkoutService {
     });
   }
 
-  async findAll(): Promise<Workout[]> {
-    return this.prisma.workout.findMany();
+  async findAllByUser(userId: string): Promise<Workout[]> {
+    return this.prisma.workout.findMany({
+      where: { userId },
+    });
   }
 
   async findOne(id: string): Promise<Workout> {
     const workout = await this.prisma.workout.findUnique({
       where: { id },
+      include: {
+        exercises: true,
+      },
     });
     if (!workout) {
       throw new NotFoundException('Workout not found');
