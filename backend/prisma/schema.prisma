@@ -23,6 +23,9 @@ enum MuscleGroup {
   SHOULDERS
   ARMS
   LEGS
+  BICEPS
+  TRICEPS
+  GLUTES
 }
 
 model Workout {

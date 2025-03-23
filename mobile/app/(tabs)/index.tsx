@@ -1,5 +1,3 @@
-import Button from "@/components/Button";
-import ImageViewer from "@/components/ImageViewer";
 import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
