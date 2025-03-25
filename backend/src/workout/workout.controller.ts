@@ -39,4 +39,9 @@ export class WorkoutController {
   remove(@Param('id') id: string) {
     return this.workoutService.remove(id);
   }
+
+  @Delete()
+  removeAll() {
+    return this.workoutService.removeAll();
+  }
 }

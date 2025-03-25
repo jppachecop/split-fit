@@ -12,11 +12,11 @@ export class WorkoutService {
       data: {
         name: createWorkoutDto.name,
         muscleGroups: createWorkoutDto.muscleGroups,
-        user: {
-          connect: {
-            id: createWorkoutDto.userId,
-          },
-        },
+        // user: {
+        //   connect: {
+        //     // id: createWorkoutDto.userId,
+        //   },
+        // },
         exercises: {
           create: createWorkoutDto.exercises,
         },
@@ -64,5 +64,10 @@ export class WorkoutService {
       where: { id },
     });
     return id;
+  }
+
+  async removeAll(): Promise<string> {
+    await this.prisma.workout.deleteMany();
+    return 'All workouts deleted';
   }
 }
