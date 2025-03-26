@@ -52,7 +52,14 @@ export default function WorkoutDetailsScreen() {
   });
 
   const toggleMuscleGroup = (muscle: string, value: string[]) => {
-    setValue("muscleGroups", [...value, muscle]);
+    if (value.includes(muscle)) {
+      setValue(
+        "muscleGroups",
+        value.filter((m) => m !== muscle)
+      );
+    } else {
+      setValue("muscleGroups", [...value, muscle]);
+    }
   };
 
   const addExercise = () => {

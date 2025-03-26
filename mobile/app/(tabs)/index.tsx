@@ -1,5 +1,12 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const PlaceholderImage = require("@/assets/images/background-image.png");
 
@@ -30,6 +37,12 @@ export default function Index() {
         <Button theme="primary" label="Choose a photo" />
         <Button label="Use this photo" />
       </View> */}
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={() => router.push("/workout-details")}
+      >
+        <FontAwesome name="plus" size={18} color="#25292e" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -66,6 +79,22 @@ const styles = StyleSheet.create({
     padding: 40,
     backgroundColor: "#25292e",
     alignItems: "center",
+  },
+  floatingButton: {
+    backgroundColor: "#05a2ba",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 40,
+    right: 30,
+    elevation: 5, // For Android shadow
+    shadowColor: "#000", // For iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   imageContainer: {
     flex: 1,
