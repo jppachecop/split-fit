@@ -12,11 +12,12 @@ export class WorkoutService {
       data: {
         name: createWorkoutDto.name,
         muscleGroups: createWorkoutDto.muscleGroups,
-        // user: {
-        //   connect: {
-        //     // id: createWorkoutDto.userId,
-        //   },
-        // },
+        user: {
+          connect: {
+            // id: createWorkoutDto.userId,
+            id: '9a921aab-2e6b-4d13-8724-56fe98042423',
+          },
+        },
         exercises: {
           create: createWorkoutDto.exercises,
         },
