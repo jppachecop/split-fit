@@ -1,5 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import axios from "axios";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -8,35 +10,52 @@ import {
   View,
 } from "react-native";
 
-const PlaceholderImage = require("@/assets/images/background-image.png");
+interface Workout {
+  id: string;
+  name: string;
+  muscleGroups: string[];
+}
 
 export default function Index() {
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/workout/user/1"
+        );
+        setWorkouts(response.data);
+      } catch (error) {
+        console.error("Error fetching workouts:", error);
+      }
+    };
+
+    fetchWorkouts();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => router.push("/workout/create")}
-        android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
-        style={({ pressed }) => [
-          styles.cardContainer,
-          { opacity: pressed ? 0.8 : 1 },
-        ]}
-      >
-        <View style={styles.cardHeader}>
-          <Text style={styles.cardHeaderText}>Treino A</Text>
-        </View>
-        <View style={styles.cardContent}>
-          <Text style={styles.cardContentText}>
-            {["Chest", "Back", "Shoulders", "Arms", "Legs"].join(", ")}
-          </Text>
-        </View>
-      </Pressable>
-      {/* <View style={styles.imageContainer}>
-        <ImageViewer imgSource={PlaceholderImage} />
-      </View> */}
-      {/* <View style={styles.footerContainer}>
-        <Button theme="primary" label="Choose a photo" />
-        <Button label="Use this photo" />
-      </View> */}
+      {workouts.map((workout) => (
+        <Pressable
+          key={workout.id}
+          onPress={() => router.push(`/workout/${workout.id}`)}
+          android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
+          style={({ pressed }) => [
+            styles.cardContainer,
+            { opacity: pressed ? 0.8 : 1 },
+          ]}
+        >
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardHeaderText}>{workout.name}</Text>
+          </View>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardContentText}>
+              {workout.muscleGroups.join(", ")}
+            </Text>
+          </View>
+        </Pressable>
+      ))}
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => router.push("/workout/create")}
@@ -75,6 +94,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   container: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
     flex: 1,
     padding: 40,
     backgroundColor: "#25292e",
