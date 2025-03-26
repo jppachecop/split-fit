@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import axios from "axios";
 import Checkbox from "expo-checkbox";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -14,9 +15,9 @@ import {
 
 interface Exercise {
   name: string;
-  sets: number;
-  reps: number;
-  weight: number;
+  sets: string;
+  reps: string;
+  weight: string;
 }
 
 interface WorkoutFormData {
@@ -38,16 +39,16 @@ const MuscleGroup = [
 
 const PLACEHOLDER_COLOR = "#ffffff64";
 
-export default function WorkoutDetailsScreen() {
+export default function CreateWorkoutScreen() {
   const [exercises, setExercises] = useState<Exercise[]>([
-    { name: "", sets: 0, reps: 0, weight: 0 },
+    { name: "", sets: "", reps: "", weight: "" },
   ]);
 
   const { control, handleSubmit, setValue } = useForm<WorkoutFormData>({
     defaultValues: {
       name: "",
       muscleGroups: [],
-      exercises: [{ name: "", sets: 0, reps: 0, weight: 0 }],
+      exercises: [{ name: "", sets: "", reps: "", weight: "" }],
     },
   });
 
@@ -63,15 +64,13 @@ export default function WorkoutDetailsScreen() {
   };
 
   const addExercise = () => {
-    setExercises([...exercises, { name: "", sets: 0, reps: 0, weight: 0 }]);
+    setExercises([...exercises, { name: "", sets: "", reps: "", weight: "" }]);
   };
 
   const onSubmit = async (data: WorkoutFormData) => {
-    console.log(data);
-
     try {
-      const response = await axios.post("http://localhost:3000/workout", data);
-      console.log(response.data);
+      await axios.post("http://localhost:3000/workout", data);
+      router.push("/");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -180,7 +179,7 @@ export default function WorkoutDetailsScreen() {
                     placeholder="Séries"
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     keyboardType="numeric"
-                    value={value.toString()}
+                    value={value}
                     onChangeText={(text) => onChange(Number(text))}
                   />
                 )}
@@ -194,7 +193,7 @@ export default function WorkoutDetailsScreen() {
                     placeholder="Repetições"
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     keyboardType="numeric"
-                    value={value.toString()}
+                    value={value}
                     onChangeText={(text) => onChange(Number(text))}
                   />
                 )}
@@ -208,7 +207,7 @@ export default function WorkoutDetailsScreen() {
                     placeholder="Peso"
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     keyboardType="numeric"
-                    value={value.toString()}
+                    value={value}
                     onChangeText={(text) => onChange(Number(text))}
                   />
                 )}

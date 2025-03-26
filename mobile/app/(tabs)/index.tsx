@@ -16,6 +16,17 @@ interface Workout {
   muscleGroups: string[];
 }
 
+const MuscleGroup = [
+  { label: "Peito", value: "CHEST" },
+  { label: "Costas", value: "BACK" },
+  { label: "Pernas", value: "LEGS" },
+  { label: "Braços", value: "ARMS" },
+  { label: "Ombro", value: "SHOULDERS" },
+  { label: "Glúteo", value: "GLUTES" },
+  { label: "Biceps", value: "BICEPS" },
+  { label: "Triceps", value: "TRICEPS" },
+];
+
 export default function Index() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
 
@@ -23,7 +34,7 @@ export default function Index() {
     const fetchWorkouts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/workout/user/1"
+          "http://localhost:3000/workout/user/9a921aab-2e6b-4d13-8724-56fe98042423"
         );
         setWorkouts(response.data);
       } catch (error) {
@@ -51,7 +62,11 @@ export default function Index() {
           </View>
           <View style={styles.cardContent}>
             <Text style={styles.cardContentText}>
-              {workout.muscleGroups.join(", ")}
+              {MuscleGroup.filter((muscleGroup) =>
+                workout.muscleGroups.includes(muscleGroup.value)
+              )
+                .map((muscleGroup) => muscleGroup.label)
+                .join(", ")}
             </Text>
           </View>
         </Pressable>
