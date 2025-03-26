@@ -1,53 +1,73 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import Button from "@/components/Button";
+import axios from "axios";
 import Checkbox from "expo-checkbox";
 import { useState } from "react";
-import Button from "@/components/Button";
 import { Controller, useForm } from "react-hook-form";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+
 interface Exercise {
   name: string;
-  sets: string;
-  reps: string;
-  weight: string;
+  sets: number;
+  reps: number;
+  weight: number;
 }
 
 interface WorkoutFormData {
   name: string;
-  muscles: string[];
+  muscleGroups: string[];
   exercises: Exercise[];
 }
+
+const MuscleGroup = [
+  { label: "Peito", value: "CHEST" },
+  { label: "Costas", value: "BACK" },
+  { label: "Pernas", value: "LEGS" },
+  { label: "Braços", value: "ARMS" },
+  { label: "Ombro", value: "SHOULDERS" },
+  { label: "Glúteo", value: "GLUTES" },
+  { label: "Biceps", value: "BICEPS" },
+  { label: "Triceps", value: "TRICEPS" },
+];
 
 const PLACEHOLDER_COLOR = "#ffffff64";
 
 export default function WorkoutDetailsScreen() {
   const [exercises, setExercises] = useState<Exercise[]>([
-    { name: "", sets: "", reps: "", weight: "" },
+    { name: "", sets: 0, reps: 0, weight: 0 },
   ]);
 
   const { control, handleSubmit, setValue } = useForm<WorkoutFormData>({
     defaultValues: {
       name: "",
-      muscles: [],
-      exercises: [{ name: "", sets: "", reps: "", weight: "" }],
+      muscleGroups: [],
+      exercises: [{ name: "", sets: 0, reps: 0, weight: 0 }],
     },
   });
 
   const toggleMuscleGroup = (muscle: string, value: string[]) => {
-    setValue("muscles", [...value, muscle]);
+    setValue("muscleGroups", [...value, muscle]);
   };
 
   const addExercise = () => {
-    setExercises([...exercises, { name: "", sets: "", reps: "", weight: "" }]);
+    setExercises([...exercises, { name: "", sets: 0, reps: 0, weight: 0 }]);
   };
 
-  const onSubmit = (data: WorkoutFormData) => {
+  const onSubmit = async (data: WorkoutFormData) => {
     console.log(data);
+
+    try {
+      const response = await axios.post("http://localhost:3000/workout", data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (
@@ -73,47 +93,53 @@ export default function WorkoutDetailsScreen() {
           <Text style={styles.text}>Grupos Musculares</Text>
           <View style={styles.checkboxContainer}>
             <View style={{ width: "50%" }}>
-              {["Peito", "Costas", "Pernas", "Braços"].map((muscle) => (
+              {MuscleGroup.slice(0, 4).map((muscle) => (
                 <Controller
-                  key={muscle}
+                  key={muscle.value}
                   control={control}
-                  name={`muscles`}
+                  name={`muscleGroups`}
                   render={({ field: { value } }) => (
                     <Pressable
-                      key={muscle}
+                      key={muscle.value}
                       style={styles.checkboxRow}
-                      onPress={() => toggleMuscleGroup(muscle, value)}
+                      onPress={() => toggleMuscleGroup(muscle.value, value)}
                     >
                       <Checkbox
                         style={styles.checkbox}
-                        value={value.includes(muscle)}
-                        onValueChange={() => toggleMuscleGroup(muscle, value)}
-                        color={value.includes(muscle) ? "#05a2ba" : undefined}
+                        value={value.includes(muscle.value)}
+                        onValueChange={() =>
+                          toggleMuscleGroup(muscle.value, value)
+                        }
+                        color={
+                          value.includes(muscle.value) ? "#05a2ba" : undefined
+                        }
                       />
-                      <Text style={styles.checkboxLabel}>{muscle}</Text>
+                      <Text style={styles.checkboxLabel}>{muscle.label}</Text>
                     </Pressable>
                   )}
                 />
               ))}
             </View>
             <View style={{ width: "50%" }}>
-              {["Biceps", "Triceps", "Ombro", "Glúteo"].map((muscle) => (
+              {MuscleGroup.slice(4).map((muscle) => (
                 <Controller
-                  key={muscle}
+                  key={muscle.value}
                   control={control}
-                  name={`muscles`}
+                  name={`muscleGroups`}
                   render={({ field: { value } }) => (
                     <Pressable
-                      key={muscle}
+                      key={muscle.value}
                       style={styles.checkboxRow}
-                      onPress={() => toggleMuscleGroup(muscle, value)}
+                      onPress={() => toggleMuscleGroup(muscle.value, value)}
                     >
                       <Checkbox
                         style={styles.checkbox}
-                        value={value.includes(muscle)}
-                        color={value.includes(muscle) ? "#05a2ba" : undefined}
+                        value={value.includes(muscle.value)}
+                        color={
+                          value.includes(muscle.value) ? "#05a2ba" : undefined
+                        }
                       />
-                      <Text style={styles.checkboxLabel}>{muscle}</Text>
+                      <Text style={styles.checkboxLabel}>{muscle.label}</Text>
                     </Pressable>
                   )}
                 />
@@ -147,8 +173,8 @@ export default function WorkoutDetailsScreen() {
                     placeholder="Séries"
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     keyboardType="numeric"
-                    value={value}
-                    onChangeText={onChange}
+                    value={value.toString()}
+                    onChangeText={(text) => onChange(Number(text))}
                   />
                 )}
               />
@@ -161,8 +187,8 @@ export default function WorkoutDetailsScreen() {
                     placeholder="Repetições"
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     keyboardType="numeric"
-                    value={value}
-                    onChangeText={onChange}
+                    value={value.toString()}
+                    onChangeText={(text) => onChange(Number(text))}
                   />
                 )}
               />
@@ -175,8 +201,8 @@ export default function WorkoutDetailsScreen() {
                     placeholder="Peso"
                     placeholderTextColor={PLACEHOLDER_COLOR}
                     keyboardType="numeric"
-                    value={value}
-                    onChangeText={onChange}
+                    value={value.toString()}
+                    onChangeText={(text) => onChange(Number(text))}
                   />
                 )}
               />
