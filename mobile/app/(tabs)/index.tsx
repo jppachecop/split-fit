@@ -14,7 +14,7 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Pressable
-        onPress={() => router.push("/create-workout")}
+        onPress={() => router.push("/workout/create")}
         android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
         style={({ pressed }) => [
           styles.cardContainer,
@@ -39,7 +39,7 @@ export default function Index() {
       </View> */}
       <TouchableOpacity
         style={styles.floatingButton}
-        onPress={() => router.push("/create-workout")}
+        onPress={() => router.push("/workout/create")}
       >
         <FontAwesome name="plus" size={18} color="#25292e" />
       </TouchableOpacity>
