@@ -50,30 +50,36 @@ export default function Index() {
     <>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
-          {workouts.map((workout) => (
-            <Pressable
-              key={workout.id}
-              onPress={() => router.push(`/workout/${workout.id}`)}
-              android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
-              style={({ pressed }) => [
-                styles.cardContainer,
-                { opacity: pressed ? 0.8 : 1 },
-              ]}
-            >
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardHeaderText}>{workout.name}</Text>
-              </View>
-              <View style={styles.cardContent}>
-                <Text style={styles.cardContentText}>
-                  {MuscleGroup.filter((muscleGroup) =>
-                    workout.muscleGroups.includes(muscleGroup.value)
-                  )
-                    .map((muscleGroup) => muscleGroup.label)
-                    .join(", ")}
-                </Text>
-              </View>
-            </Pressable>
-          ))}
+          {workouts.length > 0 ? (
+            workouts.map((workout) => (
+              <Pressable
+                key={workout.id}
+                onPress={() => router.push(`/workout/${workout.id}`)}
+                android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
+                style={({ pressed }) => [
+                  styles.cardContainer,
+                  { opacity: pressed ? 0.8 : 1 },
+                ]}
+              >
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardHeaderText}>{workout.name}</Text>
+                </View>
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardContentText}>
+                    {MuscleGroup.filter((muscleGroup) =>
+                      workout.muscleGroups.includes(muscleGroup.value)
+                    )
+                      .map((muscleGroup) => muscleGroup.label)
+                      .join(", ")}
+                  </Text>
+                </View>
+              </Pressable>
+            ))
+          ) : (
+            <Text style={styles.noWorkoutsText}>
+              Nenhum treino encontrado, crie um novo treino no botão abaixo
+            </Text>
+          )}
         </View>
       </ScrollView>
       <TouchableOpacity
@@ -148,5 +154,10 @@ const styles = StyleSheet.create({
   footerContainer: {
     flex: 1 / 3,
     alignItems: "center",
+  },
+  noWorkoutsText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
