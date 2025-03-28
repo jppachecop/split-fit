@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -46,42 +47,50 @@ export default function Index() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {workouts.map((workout) => (
-        <Pressable
-          key={workout.id}
-          onPress={() => router.push(`/workout/${workout.id}`)}
-          android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
-          style={({ pressed }) => [
-            styles.cardContainer,
-            { opacity: pressed ? 0.8 : 1 },
-          ]}
-        >
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardHeaderText}>{workout.name}</Text>
-          </View>
-          <View style={styles.cardContent}>
-            <Text style={styles.cardContentText}>
-              {MuscleGroup.filter((muscleGroup) =>
-                workout.muscleGroups.includes(muscleGroup.value)
-              )
-                .map((muscleGroup) => muscleGroup.label)
-                .join(", ")}
-            </Text>
-          </View>
-        </Pressable>
-      ))}
+    <>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          {workouts.map((workout) => (
+            <Pressable
+              key={workout.id}
+              onPress={() => router.push(`/workout/${workout.id}`)}
+              android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
+              style={({ pressed }) => [
+                styles.cardContainer,
+                { opacity: pressed ? 0.8 : 1 },
+              ]}
+            >
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardHeaderText}>{workout.name}</Text>
+              </View>
+              <View style={styles.cardContent}>
+                <Text style={styles.cardContentText}>
+                  {MuscleGroup.filter((muscleGroup) =>
+                    workout.muscleGroups.includes(muscleGroup.value)
+                  )
+                    .map((muscleGroup) => muscleGroup.label)
+                    .join(", ")}
+                </Text>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
       <TouchableOpacity
         style={styles.floatingButton}
         onPress={() => router.push("/workout/create")}
       >
         <FontAwesome name="plus" size={18} color="#25292e" />
       </TouchableOpacity>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: "#25292e",
+  },
   cardContainer: {
     backgroundColor: "#333333",
     borderRadius: 15,
